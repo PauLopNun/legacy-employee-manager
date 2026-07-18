@@ -15,21 +15,21 @@
     </properties>
 
     <dependencies>
-        <!-- Driver de Oracle -->
+        <!-- Oracle JDBC Driver: Conexión con base de datos -->
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc11</artifactId>
             <version>23.26.2.0.0</version>
         </dependency>
 
-        <!-- HikariCP: Connection Pool -->
+        <!-- HikariCP: Pool de conexiones de alto rendimiento -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.1.0</version>
         </dependency>
 
-        <!-- Logging: SLF4J API y Logback -->
+        <!-- Logback: Logging profesional mediante SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -41,18 +41,72 @@
             <version>1.5.0</version>
         </dependency>
 
-        <!-- Testing: JUnit 5 y Mockito -->
+        <!-- JUnit 5: Framework para tests unitarios -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Mockito: Mocking de objetos para tests aislados -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Integración de Mockito con JUnit 5 -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- JaCoCo: Informe de cobertura (excluye infraestructura para medir lógica real) -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/legacy/config/*</exclude>
+                        <exclude>com/legacy/LegacyApp*</exclude>
+                        <exclude>com/legacy/model/*</exclude>
+                        <exclude>com/legacy/exception/*</exclude>
+                        <exclude>com/legacy/dao/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Surefire: Ejecutor de tests con compatibilidad Java 26 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>@{argLine} -Dnet.bytebuddy.experimental=true</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
