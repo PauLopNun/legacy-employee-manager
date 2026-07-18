@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.CallableStatement;
 import java.sql.Types;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class LegacyApp {
 
@@ -20,9 +22,18 @@ public class LegacyApp {
     }
 
     private static Connection crearConexion() throws Exception {
-        String url = "jdbc:oracle:thin:@//localhost:1521/XEPDB1";
-        String usuario = "admin";
-        String password = "TuPasswordSegura123";
+        Properties props = new Properties();
+
+        try (InputStream input = LegacyApp.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new RuntimeException("No se encontró config.properties. Copia config.properties.example y rellénalo.");
+            }
+            props.load(input);
+        }
+
+        String url = props.getProperty("db.url");
+        String usuario = props.getProperty("db.usuario");
+        String password = props.getProperty("db.password");
 
         return DriverManager.getConnection(url, usuario, password);
     }
