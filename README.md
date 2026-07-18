@@ -18,10 +18,10 @@ Understanding how pure Java communicates with these components via JDBC is a fun
 
 ## Features
 
-- **Native Secure Connection:** Implementation of Oracle connectivity isolating credentials via a `config.properties` file.
+- **Native Secure Connection:** Implementation of Oracle connectivity by isolating database credentials in a `config.properties` file.
 - **Database Logic Execution:** Usage of `CallableStatement` to invoke PL/SQL stored procedures directly from Java.
-- **`OUT` Parameter Handling:** Extraction of mathematical results calculated by the database (e.g., salary increment simulation).
-- **Cursor Reading (`REF_CURSOR`):** Manual mapping and retrieval of complex datasets returned by a PL/SQL procedure to the Java client.
+- **`OUT` Parameter Handling:** Extraction of values calculated by the database (e.g., salary increment simulation).
+- **Cursor Reading (`REF_CURSOR`):** Manual mapping and retrieval of datasets returned by a PL/SQL procedure.
 
 ---
 
@@ -29,10 +29,11 @@ Understanding how pure Java communicates with these components via JDBC is a fun
 
 | Component | Technology |
 |------------|------------|
-| **Language** | Java 17 (Native, no abstractions) |
-| **Database** | Oracle XE (via Docker) |
+| **Language** | Java 17 |
+| **Build Tool** | Maven |
+| **Database** | Oracle XE (Docker) |
 | **Connectivity** | JDBC (`Connection`, `CallableStatement`, `ResultSet`) |
-| **Database Logic** | PL/SQL (Stored Procedures, Cursors) |
+| **Database Logic** | PL/SQL (Stored Procedures, REF CURSOR, Exception Handling) |
 | **Infrastructure** | Docker Compose |
 
 ---
@@ -41,19 +42,27 @@ Understanding how pure Java communicates with these components via JDBC is a fun
 
 ```text
 legacy-employee-manager/
-├── .gitignore
-├── README.md
-├── docker/
-│   └── docker-compose.yml            # Oracle XE infrastructure
 ├── db/
-│   ├── 01_create_table.sql           # Schema initialization
-│   └── 02_procedure_subir_sueldo.sql # PL/SQL business logic
-└── src/
-    ├── config.properties.example     # Credential template
-    └── com/
-        └── legacy/
-            └── LegacyApp.java        # Java JDBC implementation
+│   ├── 01_create_table.sql
+│   ├── 02_procedure_subir_sueldo.sql
+│   ├── 03_cursor_empleados.sql
+│   └── 04_excepciones.sql
+├── docker/
+│   └── docker-compose.yml
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── legacy/
+│       │           └── LegacyApp.java
+│       └── resources/
+│           └── config.properties.example
+├── .gitignore
+├── pom.xml
+└── README.md
 ```
+
+> **Note:** `config.properties` is intentionally excluded from version control and must be created locally from `config.properties.example`.
 
 ---
 
@@ -61,36 +70,48 @@ legacy-employee-manager/
 
 ### Prerequisites
 
-- JDK 17+
-- Docker
-- Docker Compose
+- JDK 17 or later
+- Maven
+- Docker & Docker Compose
+- Oracle SQL client (e.g. DBeaver or IntelliJ Database Tools)
 
 ### Run locally
 
-#### 1. Initialize the database container
+#### 1. Start the Oracle XE container
 
 ```bash
 cd docker
 docker compose up -d
 ```
 
-#### 2. Execute SQL scripts
+#### 2. Initialize the database
 
-Connect to the local Oracle instance (for example, using **DBeaver** or **IntelliJ Database Tools**) and execute the scripts located in the `/db` directory in numerical order.
+Connect to your local Oracle XE instance and execute the SQL scripts inside the `/db` directory in numerical order:
 
-#### 3. Configure credentials
+1. `01_create_table.sql`
+2. `02_procedure_subir_sueldo.sql`
+3. `03_cursor_empleados.sql`
+4. `04_excepciones.sql`
 
-Copy the example configuration file:
+#### 3. Configure the application
 
-```bash
-cp src/config.properties.example src/config.properties
+Copy:
+
+```text
+src/main/resources/config.properties.example
 ```
 
-Then edit `src/config.properties` and fill in your local Oracle database connection details.
+to:
 
-#### 4. Execute the application
+```text
+src/main/resources/config.properties
+```
 
-Compile and run `LegacyApp.java` to view the JDBC and PL/SQL integration in the console.
+Then edit `config.properties` and provide your local Oracle database credentials.
+
+#### 4. Run the application
+
+Compile the project with Maven and execute `LegacyApp` from your IDE.
 
 ---
 
@@ -99,5 +120,5 @@ Compile and run `LegacyApp.java` to view the JDBC and PL/SQL integration in the 
 **Pau López Núñez**
 
 - **Email:** paulopeznunez@gmail.com
-- **LinkedIn:** paulopnun
+- **LinkedIn:** [paulopnun](https://www.linkedin.com/in/paulopnun/)
 - **GitHub:** [@PauLopNun](https://github.com/PauLopNun)
