@@ -3,6 +3,7 @@ package com.legacy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.Types;
 import java.io.InputStream;
 import java.util.Properties;
@@ -15,6 +16,8 @@ public class LegacyApp {
 
             int nuevoSalario = subirSueldo(conn, 101, 5);
             System.out.println("Nuevo salario: " + nuevoSalario);
+
+            listarEmpleados(conn);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,6 +52,26 @@ public class LegacyApp {
             stmt.execute();
 
             return stmt.getInt(3);
+        }
+    }
+
+    private static void listarEmpleados(Connection conn) throws Exception {
+        String sql = "{call listar_empleados(?)}";
+
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.registerOutParameter(1, Types.REF_CURSOR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String nombre = rs.getString("nombre");
+                    String apellido = rs.getString("apellido");
+                    double salario = rs.getDouble("salario");
+
+                    System.out.println(id + " - " + nombre + " " + apellido + " - " + salario);
+                }
+            }
         }
     }
 }
