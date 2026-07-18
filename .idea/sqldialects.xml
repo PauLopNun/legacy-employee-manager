@@ -2,8 +2,5 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/db/01_create_table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/db/02_procedure_subir_sueldo.sql" dialect="Oracle" />
-    <file url="file://$PROJECT_DIR$/db/03_cursor_empleados.sql" dialect="Oracle" />
-    <file url="file://$PROJECT_DIR$/db/04_excepciones.sql" dialect="Oracle" />
   </component>
 </project>
