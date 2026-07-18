@@ -14,7 +14,6 @@ public class DatabaseConfig {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConfig.class);
     private static HikariDataSource dataSource;
 
-    // El bloque static asegura que el pool se crea una sola vez cuando arranca la app
     static {
         try {
             Properties props = new Properties();
@@ -30,7 +29,6 @@ public class DatabaseConfig {
             config.setUsername(props.getProperty("db.usuario"));
             config.setPassword(props.getProperty("db.password"));
 
-            // Configuraciones pro del pool
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
             config.setConnectionTimeout(30000); // 30 segundos
@@ -43,7 +41,6 @@ public class DatabaseConfig {
         }
     }
 
-    // Este es el método que usarán los DAOs para pedir una conexión
     public static Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
