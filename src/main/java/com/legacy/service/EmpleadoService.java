@@ -31,7 +31,7 @@ public class EmpleadoService {
         List<Empleado> empleados = empleadoDAO.listarEmpleados();
 
         if (empleados.isEmpty()) {
-            logger.warn("No se encontraron empleados en la base de datos.");
+            logger.warn("No se enconatraron empleados en la base de datos.");
             return;
         }
 
